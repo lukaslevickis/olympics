@@ -1,0 +1,18 @@
+﻿@model SportsModel
+
+<h5>Create new sport</h5>
+
+@using (Html.BeginForm("Submit", "Sports", FormMethod.Post))
+{
+    <div class="container-full" style="background-color:aliceblue">
+        <div class="container">
+            @Html.LabelFor(x => x.Name)
+            @Html.TextBoxFor(x => x.Name)
+            @Html.LabelFor(x => x.TeamActivity)
+            @Html.TextBoxFor(x => x.TeamActivity)
+            <input type="submit" value="Submit" />
+        </div>
+    </div>
+}
+
+@Html.ValidationSummary()
