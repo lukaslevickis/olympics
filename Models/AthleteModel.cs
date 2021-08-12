@@ -6,12 +6,14 @@ namespace Olympics.Models
 {
     public class AthleteModel
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
         public int CountryId { get; set; }
         public string ISO3 { get; set; }
+        public string SportsName { get; set; }
         public string CountryName { get; set; }
         public List<SelectListItem> Countries { get; set; } = new List<SelectListItem>();
+        public List<string> Sports { get; set; } = new List<string>();
     }
 }
