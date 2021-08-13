@@ -9,18 +9,20 @@ namespace Olympics.Services
     public class AthleteDBService
     {
         private readonly SqlConnection _connection;
+        private Dictionary<int, AthleteModel> _athletes = new Dictionary<int, AthleteModel>();
 
         public AthleteDBService(SqlConnection connection)
         {
             _connection = connection;
         }
 
-        public List<AthleteModel> Read()
+        public Dictionary<int, AthleteModel> Read()
         {
             List<AthleteModel> items = new();
 
             _connection.Open();
 
+            //many to many left joins
             using var command = new SqlCommand("SELECT dbo.AthletesWithCountries.ID, dbo.AthletesWithCountries.Name , dbo.AthletesWithCountries.Surname, dbo.AthletesWithCountries.CountryName, dbo.Sports.SportsName " +
                                                 "FROM dbo.AthletesWithCountries " +
                                                "LEFT OUTER JOIN dbo.AthleteSports " +
@@ -45,56 +47,24 @@ namespace Olympics.Services
 
             _connection.Close();
 
-            items = GetAthletes(items);
+            _athletes = GetAthletes(items);
 
-            return items;
+            return _athletes;
         }
 
-        private List<AthleteModel> GetAthletes(List<AthleteModel> items)
+        private Dictionary<int, AthleteModel> GetAthletes(List<AthleteModel> allAthletes)
         {
-            List<List<AthleteModel>> athletes = new List<List<AthleteModel>>();
-
-            //adds same rows into one list
-            foreach (AthleteModel item in items)
+            foreach (AthleteModel athlete in allAthletes)
             {
-                List<AthleteModel> athlete = new List<AthleteModel>();
-                foreach (AthleteModel itemInner in items) //TODO naming itemInner???s
+                if (!_athletes.ContainsKey(athlete.Id))
                 {
-                    if (item.Id == itemInner.Id)
-                    {
-                        athlete.Add(itemInner);
-                    }
+                    _athletes.Add(athlete.Id, athlete);
                 }
 
-                athletes.Add(athlete);
+                _athletes[athlete.Id].Sports.Add(athlete.SportsName);
             }
 
-            //removes dublicates
-            athletes = athletes.GroupBy(x => x.FirstOrDefault().Id).Select(x => x.First()).ToList();
-
-            items = new();
-
-            //adds sports into AthleteModel list of strings
-            foreach (var athlete in athletes)
-            {
-                List<string> sports = new();
-
-                foreach (AthleteModel athleteModel in athlete)
-                {
-                    sports.Add(athleteModel.SportsName);
-                }
-
-                items.Add(
-                new AthleteModel
-                {
-                    Name = athlete.FirstOrDefault().Name,
-                    Surname = athlete.FirstOrDefault().SportsName,
-                    CountryName = athlete.FirstOrDefault().CountryName,
-                    Sports = sports,
-                });
-            }
-
-            return items;
+            return _athletes;
         }
 
         public void Create(AthleteModel model, List<CountryModel> countries)
