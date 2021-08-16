@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Olympics.Models;
 
 namespace Olympics.Services
@@ -9,14 +10,17 @@ namespace Olympics.Services
     public class AthleteDBService
     {
         private readonly SqlConnection _connection;
-        private Dictionary<int, AthleteModel> _athletes = new Dictionary<int, AthleteModel>();
+        private readonly CountryDBService _countryDBService;
+        private readonly SportsDBService _sportsDBService;
 
-        public AthleteDBService(SqlConnection connection)
+        public AthleteDBService(CountryDBService countryDBService, SportsDBService sportsDBService, SqlConnection connection)
         {
             _connection = connection;
+            _countryDBService = countryDBService;
+            _sportsDBService = sportsDBService;
         }
 
-        public Dictionary<int, AthleteModel> Read()
+        public List<AthleteModel> Read()
         {
             List<AthleteModel> items = new();
 
@@ -47,36 +51,92 @@ namespace Olympics.Services
 
             _connection.Close();
 
-            _athletes = GetAthletes(items);
+            items = GetAthletes(items);
 
-            return _athletes;
+            return items;
         }
 
-        private Dictionary<int, AthleteModel> GetAthletes(List<AthleteModel> allAthletes)
+        private List<AthleteModel> GetAthletes(List<AthleteModel> athletes)
         {
-            foreach (AthleteModel athlete in allAthletes)
+            Dictionary<int, AthleteModel> athletesDic = new Dictionary<int, AthleteModel>();
+
+            foreach (AthleteModel athlete in athletes)
             {
-                if (!_athletes.ContainsKey(athlete.Id))
+                if (!athletesDic.ContainsKey(athlete.Id))
                 {
-                    _athletes.Add(athlete.Id, athlete);
+                    athletesDic.Add(athlete.Id, athlete);
                 }
 
-                _athletes[athlete.Id].Sports.Add(athlete.SportsName);
+                athletesDic[athlete.Id].Sports.Add(athlete.SportsName);
             }
 
-            return _athletes;
+            athletes = athletesDic.Select(x => x.Value).ToList();
+
+            return athletes;
         }
 
-        public void Create(AthleteModel model, List<CountryModel> countries)
+        public List<AthleteModel> GetId()
         {
+            List<AthleteModel> items = new();
 
             _connection.Open();
-            model.CountryId = countries.Where(x => x.ISO3 == model.ISO3).FirstOrDefault().Id;
 
-            using var command = new SqlCommand($"Ic(Name, Surname, CountryId) values ('{model.Name}', '{model.Surname}', '{model.CountryId}');", _connection);
-            command.ExecuteNonQuery();
+            using var command = new SqlCommand("SELECT dbo.Athletes.ID from dbo.Athletes", _connection);
+
+            using var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                items.Add(
+                new AthleteModel
+                {
+                    Id = reader.GetInt32(0),
+                });
+            }
 
             _connection.Close();
+
+            return items;
+        }
+
+        public void Create(AthleteModel model)//todo multiple select
+        {
+            List<CountryModel> countries = _countryDBService.Read();
+            List<SportsModel> sports = _sportsDBService.Read();
+            model.CountryId = countries.Where(x => x.ISO3 == model.ISO3).FirstOrDefault().Id;
+            model.SportsId = sports.Where(x => x.Name == model.SportsName).FirstOrDefault().Id;
+
+            _connection.Open();
+            using var command = new SqlCommand($"INSERT INTO dbo.Athletes (Name, Surname, CountryId) values ('{model.Name}', '{model.Surname}', '{model.CountryId}');", _connection);
+            command.ExecuteNonQuery();
+            _connection.Close();
+
+            List<AthleteModel> id = GetId();
+            model.Id = id.LastOrDefault().Id;
+
+            _connection.Open();
+            using var command2 = new SqlCommand($"INSERT INTO dbo.AthleteSports (AthleteId, SportsId) values ('{model.Id}', '{model.SportsId}');", _connection);
+            command2.ExecuteNonQuery();
+            _connection.Close();
+        }
+
+        public AthleteModel CreateAthlete()
+        {
+            List<CountryModel> countryData = _countryDBService.Read();
+            List<SportsModel> sportsData = _sportsDBService.Read();
+            AthleteModel model = new AthleteModel();
+
+            foreach (CountryModel item in countryData)//todo
+            {
+                model.CountriesFormSelect.Add(new SelectListItem { Value = item.ISO3, Text = item.ISO3 });
+            }
+
+            foreach (SportsModel item2 in sportsData)
+            {
+                model.SportsFormSelect.Add(new SelectListItem { Value = item2.Name, Text = item2.Name });
+            }
+
+            return model;
         }
     }
 }

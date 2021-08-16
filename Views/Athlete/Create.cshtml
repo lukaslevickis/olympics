@@ -10,7 +10,8 @@
             @Html.TextBoxFor(x => x.Name)
             @Html.LabelFor(x => x.Surname)
             @Html.TextBoxFor(x => x.Surname)
-            @Html.DropDownListFor(x => x.ISO3, Model.Countries)
+            @Html.DropDownListFor(x => x.ISO3, Model.CountriesFormSelect)
+            @Html.DropDownListFor(x => x.SportsName, Model.SportsFormSelect)
             <input type="submit" value="Submit" />
         </div>
     </div>

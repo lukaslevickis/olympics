@@ -27,6 +27,7 @@ namespace Olympics.Services
                 items.Add(
                 new SportsModel
                 {
+                    Id = reader.GetInt32(0),
                     Name = reader.GetString(1),
                     TeamActivity = reader.GetBoolean(2),
                 });

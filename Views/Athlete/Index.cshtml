@@ -1,4 +1,4 @@
-﻿@model Dictionary<int, AthleteModel>
+﻿@model List<AthleteModel>
 
 <h3>Athletes</h3>
 
@@ -15,11 +15,11 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.Value.Name</td>
-                <td>@item.Value.Surname</td>
-                <td>@item.Value.CountryName</td>
+                <td>@item.Name</td>
+                <td>@item.Surname</td>
+                <td>@item.CountryName</td>
                 <td>
-                    @foreach (var sports in item.Value.Sports)
+                    @foreach (var sports in item.Sports)
                     {
                         <ul>@sports</ul>
                     }

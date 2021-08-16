@@ -14,12 +14,10 @@ namespace Olympics.Controllers
     public class AthleteController : Controller
     {
         private readonly AthleteDBService _athleteDBService;
-        private readonly CountryDBService _countryDBService;
 
-        public AthleteController(AthleteDBService athleteDBService, CountryDBService countryDBService)
+        public AthleteController(AthleteDBService athleteDBService)
         {
             _athleteDBService = athleteDBService;
-            _countryDBService = countryDBService;
         }
 
         // GET: /<controller>/
@@ -31,21 +29,14 @@ namespace Olympics.Controllers
 
         public IActionResult Submit(AthleteModel model)
         {
-            List<CountryModel> countriesData = _countryDBService.Read();
-            _athleteDBService.Create(model, countriesData);
+            _athleteDBService.Create(model);
             List<AthleteModel> data = _athleteDBService.Read();
             return View("Index", data);
         }
 
         public IActionResult Create()
         {
-            List<CountryModel> data = _countryDBService.Read();
-            AthleteModel model = new AthleteModel();
-
-            foreach (CountryModel item in data)
-            {
-                model.Countries.Add(new SelectListItem { Value = item.ISO3, Text = item.ISO3 });
-            }
+            AthleteModel model = _athleteDBService.CreateAthlete();
 
             return View(model);
         }
