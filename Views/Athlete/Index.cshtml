@@ -22,6 +22,16 @@
     </div>
 }
 
+@using (Html.BeginForm("SortBy", "Athlete", FormMethod.Post))
+{
+    <div class="container-full" style="background-color:aliceblue">
+        <div class="container">
+            @Html.DropDownListFor(x => Model.FilterSort.SortOrder, Model.FilterSort.SortFormSelect)
+            <input type="submit" value="Sort" />
+        </div>
+    </div>
+}
+
 <table class="table">
     <thead>
         <tr>

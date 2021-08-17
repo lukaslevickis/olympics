@@ -56,6 +56,26 @@ namespace Olympics.Services
             return items;
         }
 
+        internal List<AthleteModel> SortBy(ViewsGeneralModel model)
+        {
+            List<AthleteModel> athletes = Read();
+
+            switch (model.FilterSort.SortOrder)
+            {
+                case "Name":
+                    athletes = athletes.OrderBy(s => s.Name).ToList();
+                    break;
+                case "Surname":
+                    athletes = athletes.OrderBy(s => s.Surname).ToList();
+                    break;
+                default:
+                    athletes = athletes.OrderBy(s => s.CountryName).ToList();
+                    break;
+            }
+
+            return athletes;
+        }
+
         internal List<AthleteModel> FilterBySports(ViewsGeneralModel model)
         {
             List<AthleteModel> data = Read();
@@ -139,6 +159,7 @@ namespace Olympics.Services
             ViewsGeneralModel data = new ViewsGeneralModel();
             List<SelectListItem> sportsSelect = new List<SelectListItem>();
             List<SelectListItem> countrySelect  = new List<SelectListItem>();
+            List<SelectListItem> sortSelect  = new List<SelectListItem>();
             data.Sports = _sportsDBService.Read();
             data.Countries = _countryDBService.Read();
 
@@ -155,6 +176,13 @@ namespace Olympics.Services
             }
 
             data.Countries.FirstOrDefault().CountryFormSelect = countrySelect;
+
+            foreach (string item in data.FilterSort.SortProperties)
+            {
+                sortSelect.Add(new SelectListItem { Value = item, Text = item });
+            }
+
+            data.FilterSort.SortFormSelect = sortSelect;
 
             return data;
         }

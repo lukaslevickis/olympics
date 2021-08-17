@@ -9,6 +9,6 @@ namespace Olympics.Models
         public List<AthleteModel> Athletes { get; set; } = new List<AthleteModel>();
         public List<CountryModel> Countries { get; set; } = new List<CountryModel>();
         public List<SportsModel> Sports { get; set; } = new List<SportsModel>();
-        public FilterSortModel FilterSort { get; set; }
+        public FilterSortModel FilterSort { get; set; } = new FilterSortModel();
     }
 }

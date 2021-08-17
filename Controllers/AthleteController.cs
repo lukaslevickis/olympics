@@ -52,5 +52,13 @@ namespace Olympics.Controllers
             data.Athletes = _athleteDBService.FilterByCountry(model);
             return View("Index", data);
         }
+
+        [HttpPost]
+        public IActionResult SortBy(ViewsGeneralModel model)
+        {
+            ViewsGeneralModel data = _athleteDBService.CreateFilterSortSelects();
+            data.Athletes = _athleteDBService.SortBy(model);
+            return View("Index", data);
+        }
     }
 }
