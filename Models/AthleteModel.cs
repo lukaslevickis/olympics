@@ -11,14 +11,9 @@ namespace Olympics.Models
         public string Surname { get; set; }
         public int CountryId { get; set; }
 
-        public string ISO3 { get; set; }
         public string CountryName { get; set; }
-        public List<SelectListItem> CountriesFormSelect { get; set; } = new List<SelectListItem>();
-
         public string SportsName { get; set; }
         public List<string> Sports { get; set; } = new List<string>();
-        public List<SelectListItem> SportsFormSelect { get; set; } = new List<SelectListItem>();
-        public int SportsId { get; set; }
 
     }
 }

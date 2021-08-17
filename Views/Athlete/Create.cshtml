@@ -1,4 +1,4 @@
-﻿@model AthleteModel
+﻿@model ViewsGeneralModel
 
 <h5>Create new athlete</h5>
 
@@ -6,12 +6,12 @@
 {
     <div class="container-full" style="background-color:aliceblue">
         <div class="container">
-            @Html.LabelFor(x => x.Name)
-            @Html.TextBoxFor(x => x.Name)
-            @Html.LabelFor(x => x.Surname)
-            @Html.TextBoxFor(x => x.Surname)
-            @Html.DropDownListFor(x => x.ISO3, Model.CountriesFormSelect)
-            @Html.DropDownListFor(x => x.SportsName, Model.SportsFormSelect)
+            @Html.LabelFor(x => x.Athlete.Name)
+            @Html.TextBoxFor(x => x.Athlete.Name)
+            @Html.LabelFor(x => x.Athlete.Surname)
+            @Html.TextBoxFor(x => x.Athlete.Surname)
+            @Html.DropDownListFor(x => x.Countries[0].CountryName, Model.Countries[0].CountryFormSelect)
+            @Html.DropDownListFor(x => x.Sports[0].SportsName, Model.Sports[0].SportsFormSelect)
             <input type="submit" value="Submit" />
         </div>
     </div>

@@ -56,6 +56,20 @@ namespace Olympics.Services
             return items;
         }
 
+        internal List<AthleteModel> FilterBySports(ViewsGeneralModel model)
+        {
+            List<AthleteModel> data = Read();
+            data = data.Where(x => x.Sports.Contains(model.FilterSort.FilterSport)).ToList();
+            return data;
+        }
+
+        internal List<AthleteModel> FilterByCountry(ViewsGeneralModel model)
+        {
+            List<AthleteModel> data = Read();
+            data = data.Where(x => x.CountryName.Contains(model.FilterSort.FilterCountry)).ToList();
+            return data;
+        }
+
         private List<AthleteModel> GetAthletes(List<AthleteModel> athletes)
         {
             Dictionary<int, AthleteModel> athletesDic = new Dictionary<int, AthleteModel>();
@@ -99,44 +113,50 @@ namespace Olympics.Services
             return items;
         }
 
-        public void Create(AthleteModel model)//todo multiple select
+        public void Create(ViewsGeneralModel model)//todo multiple select
         {
             List<CountryModel> countries = _countryDBService.Read();
             List<SportsModel> sports = _sportsDBService.Read();
-            model.CountryId = countries.Where(x => x.ISO3 == model.ISO3).FirstOrDefault().Id;
-            model.SportsId = sports.Where(x => x.Name == model.SportsName).FirstOrDefault().Id;
+            int countryId = countries.Where(x => x.Name == model.Countries[0].CountryName).FirstOrDefault().Id;
+            int sportsId = sports.Where(x => x.Name == model.Sports[0].SportsName).FirstOrDefault().Id;
 
             _connection.Open();
-            using var command = new SqlCommand($"INSERT INTO dbo.Athletes (Name, Surname, CountryId) values ('{model.Name}', '{model.Surname}', '{model.CountryId}');", _connection);
+            using var command = new SqlCommand($"INSERT INTO dbo.Athletes (Name, Surname, CountryId) values ('{model.Athlete.Name}', '{model.Athlete.Surname}', '{countryId}');", _connection);
             command.ExecuteNonQuery();
             _connection.Close();
 
             List<AthleteModel> id = GetId();
-            model.Id = id.LastOrDefault().Id;
+            int athleteId = id.LastOrDefault().Id;
 
             _connection.Open();
-            using var command2 = new SqlCommand($"INSERT INTO dbo.AthleteSports (AthleteId, SportsId) values ('{model.Id}', '{model.SportsId}');", _connection);
+            using var command2 = new SqlCommand($"INSERT INTO dbo.AthleteSports (AthleteId, SportsId) values ('{athleteId}', '{sportsId}');", _connection);
             command2.ExecuteNonQuery();
             _connection.Close();
         }
 
-        public AthleteModel CreateAthlete()
+        public ViewsGeneralModel CreateFilterSortSelects()
         {
-            List<CountryModel> countryData = _countryDBService.Read();
-            List<SportsModel> sportsData = _sportsDBService.Read();
-            AthleteModel model = new AthleteModel();
+            ViewsGeneralModel data = new ViewsGeneralModel();
+            List<SelectListItem> sportsSelect = new List<SelectListItem>();
+            List<SelectListItem> countrySelect  = new List<SelectListItem>();
+            data.Sports = _sportsDBService.Read();
+            data.Countries = _countryDBService.Read();
 
-            foreach (CountryModel item in countryData)//todo
+            foreach (SportsModel item in data.Sports)
             {
-                model.CountriesFormSelect.Add(new SelectListItem { Value = item.ISO3, Text = item.ISO3 });
+                sportsSelect.Add(new SelectListItem { Value = item.Name, Text = item.Name });
             }
 
-            foreach (SportsModel item2 in sportsData)
+            data.Sports.FirstOrDefault().SportsFormSelect = sportsSelect;
+
+            foreach (CountryModel item in data.Countries)
             {
-                model.SportsFormSelect.Add(new SelectListItem { Value = item2.Name, Text = item2.Name });
+                countrySelect.Add(new SelectListItem { Value = item.Name, Text = item.Name });
             }
 
-            return model;
+            data.Countries.FirstOrDefault().CountryFormSelect = countrySelect;
+
+            return data;
         }
     }
 }

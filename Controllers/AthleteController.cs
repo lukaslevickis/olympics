@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Olympics.Models;
 using Olympics.Services;
 
@@ -23,22 +18,39 @@ namespace Olympics.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
-            List<AthleteModel> data = _athleteDBService.Read();
+            ViewsGeneralModel data = _athleteDBService.CreateFilterSortSelects();
+            data.Athletes = _athleteDBService.Read();
             return View(data);
         }
 
-        public IActionResult Submit(AthleteModel model)
+        public IActionResult Submit(ViewsGeneralModel model)
         {
             _athleteDBService.Create(model);
-            List<AthleteModel> data = _athleteDBService.Read();
+            ViewsGeneralModel data = _athleteDBService.CreateFilterSortSelects();
+            data.Athletes = _athleteDBService.Read();
             return View("Index", data);
         }
 
         public IActionResult Create()
         {
-            AthleteModel model = _athleteDBService.CreateAthlete();
+            ViewsGeneralModel data = _athleteDBService.CreateFilterSortSelects();
+            return View(data);
+        }
 
-            return View(model);
+        [HttpPost]
+        public IActionResult FilterBySports(ViewsGeneralModel model)
+        {
+            ViewsGeneralModel data = _athleteDBService.CreateFilterSortSelects();
+            data.Athletes = _athleteDBService.FilterBySports(model);
+            return View("Index", data);
+        }
+
+        [HttpPost]
+        public IActionResult FilterByCountry(ViewsGeneralModel model)
+        {
+            ViewsGeneralModel data = _athleteDBService.CreateFilterSortSelects();
+            data.Athletes = _athleteDBService.FilterByCountry(model);
+            return View("Index", data);
         }
     }
 }
