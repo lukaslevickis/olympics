@@ -28,6 +28,7 @@ namespace Olympics
             services.AddScoped<AthleteDBService>();
             services.AddScoped<SportsDBService>();
             services.AddScoped<CountryDBService>();
+            services.AddScoped<GeneralDBService>();
             services.AddTransient<SqlConnection>(_ => new SqlConnection(Configuration["ConnectionStrings:Default"]));
             services.AddControllersWithViews();
         }

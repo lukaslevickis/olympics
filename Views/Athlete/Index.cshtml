@@ -1,22 +1,14 @@
-﻿@model ViewsGeneralModel
+﻿@model GeneralModel
 
 <h3>Athletes</h3>
 
-@using (Html.BeginForm("FilterBySports", "Athlete", FormMethod.Post))
+@using (Html.BeginForm("FilterGeneral", "Athlete", FormMethod.Post))
 {
     <div class="container-full" style="background-color:aliceblue">
         <div class="container">
-            @Html.DropDownListFor(x => Model.FilterSort.FilterSport, Model.Sports[0].SportsFormSelect)
-            <input type="submit" value="Filter" />
-        </div>
-    </div>
-}
-
-@using (Html.BeginForm("FilterByCountry", "Athlete", FormMethod.Post))
-{
-    <div class="container-full" style="background-color:aliceblue">
-        <div class="container">
-            @Html.DropDownListFor(x => Model.FilterSort.FilterCountry, Model.Countries[0].CountryFormSelect)
+            @Html.DropDownListFor(x => Model.FilterSort.FilterSport, new SelectList(Model.Sports, "Name", "Name"))
+            @Html.DropDownListFor(x => Model.FilterSort.FilterCountry, new SelectList(Model.Countries, "Name", "Name"))
+            @Html.DropDownListFor(x => Model.FilterSort.FilterActivity, new SelectList(Model.FilterSort.TeamActivityProperties))
             <input type="submit" value="Filter" />
         </div>
     </div>
@@ -26,7 +18,7 @@
 {
     <div class="container-full" style="background-color:aliceblue">
         <div class="container">
-            @Html.DropDownListFor(x => Model.FilterSort.SortOrder, Model.FilterSort.SortFormSelect)
+            @Html.DropDownListFor(x => Model.FilterSort.SortOrder, new SelectList(Model.FilterSort.SortProperties))
             <input type="submit" value="Sort" />
         </div>
     </div>

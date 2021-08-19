@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using System.Collections.Generic;
 
 namespace Olympics.Models
 {
@@ -8,9 +6,7 @@ namespace Olympics.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public bool TeamActivity { get; set; }
-
-        public string SportsName { get; set; }
-        public List<SelectListItem> SportsFormSelect { get; set; } = new List<SelectListItem>();
+        public string TeamActivity { get; set; }
+        public List<string> TeamActivityProperties { get; set; } = new List<string>() { "Team", "Non-team" };
     }
 }

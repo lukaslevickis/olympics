@@ -1,4 +1,4 @@
-﻿@model ViewsGeneralModel
+﻿@model GeneralModel
 
 <h5>Create new athlete</h5>
 
@@ -10,8 +10,8 @@
             @Html.TextBoxFor(x => x.Athlete.Name)
             @Html.LabelFor(x => x.Athlete.Surname)
             @Html.TextBoxFor(x => x.Athlete.Surname)
-            @Html.DropDownListFor(x => x.Countries[0].CountryName, Model.Countries[0].CountryFormSelect)
-            @Html.DropDownListFor(x => x.Sports[0].SportsName, Model.Sports[0].SportsFormSelect)
+            @Html.DropDownListFor(x => x.Countries[0].Name, new SelectList(Model.Countries, "Name", "Name"))
+            @Html.DropDownListFor(x => x.Sports[0].Name, new SelectList(Model.Sports, "Name", "Name"))
             <input type="submit" value="Submit" />
         </div>
     </div>

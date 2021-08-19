@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Olympics.Models
 {
-    public class ViewsGeneralModel
+    public class GeneralModel
     {
         public AthleteModel Athlete { get; set; }
         public List<AthleteModel> Athletes { get; set; } = new List<AthleteModel>();

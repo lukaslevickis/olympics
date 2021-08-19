@@ -9,54 +9,47 @@ namespace Olympics.Controllers
     public class AthleteController : Controller
     {
         private readonly AthleteDBService _athleteDBService;
+        private readonly GeneralDBService _generalDBService;
 
-        public AthleteController(AthleteDBService athleteDBService)
+        public AthleteController(AthleteDBService athleteDBService, GeneralDBService viewsGeneralService)
         {
             _athleteDBService = athleteDBService;
+            _generalDBService = viewsGeneralService;
         }
 
         // GET: /<controller>/
         public IActionResult Index()
         {
-            ViewsGeneralModel data = _athleteDBService.CreateFilterSortSelects();
-            data.Athletes = _athleteDBService.Read();
+            GeneralModel data = _generalDBService.GetGeneralDBData();
             return View(data);
         }
 
-        public IActionResult Submit(ViewsGeneralModel model)
+        public IActionResult Submit(GeneralModel model)
         {
             _athleteDBService.Create(model);
-            ViewsGeneralModel data = _athleteDBService.CreateFilterSortSelects();
+            GeneralModel data = _generalDBService.GetGeneralDBData();
             data.Athletes = _athleteDBService.Read();
             return View("Index", data);
         }
 
         public IActionResult Create()
         {
-            ViewsGeneralModel data = _athleteDBService.CreateFilterSortSelects();
+            GeneralModel data = _generalDBService.GetGeneralDBData();
             return View(data);
         }
 
         [HttpPost]
-        public IActionResult FilterBySports(ViewsGeneralModel model)
+        public IActionResult FilterGeneral(GeneralModel model)
         {
-            ViewsGeneralModel data = _athleteDBService.CreateFilterSortSelects();
-            data.Athletes = _athleteDBService.FilterBySports(model);
+            GeneralModel data = _generalDBService.GetGeneralDBData();
+            data.Athletes = _athleteDBService.FilterGeneral(model);
             return View("Index", data);
         }
 
         [HttpPost]
-        public IActionResult FilterByCountry(ViewsGeneralModel model)
+        public IActionResult SortBy(GeneralModel model)
         {
-            ViewsGeneralModel data = _athleteDBService.CreateFilterSortSelects();
-            data.Athletes = _athleteDBService.FilterByCountry(model);
-            return View("Index", data);
-        }
-
-        [HttpPost]
-        public IActionResult SortBy(ViewsGeneralModel model)
-        {
-            ViewsGeneralModel data = _athleteDBService.CreateFilterSortSelects();
+            GeneralModel data = _generalDBService.GetGeneralDBData();
             data.Athletes = _athleteDBService.SortBy(model);
             return View("Index", data);
         }

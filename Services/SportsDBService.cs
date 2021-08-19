@@ -17,6 +17,7 @@ namespace Olympics.Services
         public List<SportsModel> Read()
         {
             List<SportsModel> items = new();
+            SportsModel sportsModel = new();
 
             _connection.Open();
 
@@ -29,7 +30,7 @@ namespace Olympics.Services
                 {
                     Id = reader.GetInt32(0),
                     Name = reader.GetString(1),
-                    TeamActivity = reader.GetBoolean(2),
+                    TeamActivity = reader.GetBoolean(2) ? sportsModel.TeamActivityProperties[0] : sportsModel.TeamActivityProperties[1],
                 });
             }
 
