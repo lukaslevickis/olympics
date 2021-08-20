@@ -31,22 +31,35 @@
             <th scope="col">Surname</th>
             <th scope="col">Country</th>
             <th scope="col">Sports</th>
+            <th scope="col">Actions</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model.Athletes)
         {
-            <tr>
-                <td>@item.Name</td>
-                <td>@item.Surname</td>
-                <td>@item.CountryName</td>
-                <td>
-                    @foreach (var sports in item.Sports)
-                    {
-                        <ul>@sports</ul>
-                    }
-                </td>
-            </tr>
+        <tr>
+            <td>@item.Name</td>
+            <td>@item.Surname</td>
+            <td>@item.CountryName</td>
+            <td>
+                @foreach (var sports in item.Sports)
+                {
+                    <ul>@sports</ul>
+                }
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+                @using (Html.BeginForm("Delete", "Athlete", new { id = $"{item.Id}" }, FormMethod.Post))
+                {
+                    <div class="container-full" style="background-color:aliceblue">
+                        <div class="container">
+
+                            <input type="submit" value="Delete" />
+                        </div>
+                    </div>
+                }
+            </td>
+        </tr>
         }
     </tbody>
 </table>

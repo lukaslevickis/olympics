@@ -53,5 +53,21 @@ namespace Olympics.Controllers
             data.Athletes = _athleteDBService.SortBy(model);
             return View("Index", data);
         }
+
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            GeneralModel data = _generalDBService.GetGeneralDBData();
+            data.Athletes = _athleteDBService.Delete(id);
+            return View("Index", data);
+        }
+
+        // GET: Animal/Edit/5
+        public ActionResult Edit(int id)
+        {
+            GeneralModel data = _generalDBService.GetGeneralDBData();
+            data.Athletes = _athleteDBService.Edit(id);
+            return View("Index", data);
+        }
     }
 }

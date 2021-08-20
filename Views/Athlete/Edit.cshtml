@@ -1,0 +1,20 @@
+﻿@model GeneralModel
+
+<h5>Create new athlete</h5>
+
+@using (Html.BeginForm("Submit", "Athlete", FormMethod.Post))
+{
+    <div class="container-full" style="background-color:aliceblue">
+        <div class="container">
+            @Html.LabelFor(x => x.Athlete.Name)
+            @Html.TextBoxFor(x => x.Athlete.Name)
+            @Html.LabelFor(x => x.Athlete.Surname)
+            @Html.TextBoxFor(x => x.Athlete.Surname)
+            @Html.DropDownListFor(x => x.Countries[0].Name, new SelectList(Model.Countries, "Name", "Name"))
+            @Html.DropDownListFor(x => x.Sports[0].Name, new SelectList(Model.Sports, "Name", "Name"))
+            <input type="submit" value="Submit" />
+        </div>
+    </div>
+}
+
+@Html.ValidationSummary()

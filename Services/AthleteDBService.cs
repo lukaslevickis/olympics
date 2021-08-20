@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using Olympics.Models;
@@ -55,6 +56,20 @@ namespace Olympics.Services
             return items;
         }
 
+        internal List<AthleteModel> Delete(int id)
+        {
+            _connection.Open();
+            using var command = new SqlCommand($"delete FROM dbo.AthleteSports where AthleteId = {id}; delete FROM dbo.Athletes where Id = {id};", _connection);
+            command.ExecuteNonQuery();
+            _connection.Close();
+            return Read();
+        }
+
+        internal List<AthleteModel> Edit(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         internal List<AthleteModel> SortBy(GeneralModel model)
         {
             List<AthleteModel> athletes = Read();
@@ -104,7 +119,7 @@ namespace Olympics.Services
             return athletes;
         }
 
-        public List<AthleteModel> GetId()
+        public List<AthleteModel> GetAthleteId()
         {
             List<AthleteModel> items = new();
 
@@ -140,7 +155,7 @@ namespace Olympics.Services
             command.ExecuteNonQuery();
             _connection.Close();
 
-            List<AthleteModel> id = GetId();
+            List<AthleteModel> id = GetAthleteId();
             int athleteId = id.LastOrDefault().Id;
 
             _connection.Open();
